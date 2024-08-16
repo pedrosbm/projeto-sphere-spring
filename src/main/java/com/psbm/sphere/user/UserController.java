@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import com.psbm.sphere.user.dto.UserRequest;
+import com.psbm.sphere.user.dto.UserResponse;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -25,8 +28,8 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<User> create(@RequestBody User user, UriComponentsBuilder uriBuilder) {
-        var saved = service.create(user);
+    public ResponseEntity<UserResponse> create(@RequestBody UserRequest userRequest, UriComponentsBuilder uriBuilder) {
+        var saved = service.create(userRequest.toModel());
         var uri = uriBuilder
                 .path("/user/{id}")
                 .buildAndExpand(saved.getId())
@@ -34,6 +37,6 @@ public class UserController {
 
         return ResponseEntity
                 .created(uri)
-                .body(user);
+                .body(UserResponse.from(saved));
     }
 }
